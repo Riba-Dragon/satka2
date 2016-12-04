@@ -1,0 +1,506 @@
+/*
+var _gaq = _gaq || [];
+_gaq.push(['_setAccount', 'UA-87485142-1']);
+_gaq.push(['_trackPageview']);
+
+setTimeout(function(){_gaq.push(['_trackEvent', 'test_name', 'test_value']);}, 3000);
+
+(function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+})();
+*/
+
+/*
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-87485142-1', 'auto');
+ga('send', 'pageview');
+
+setTimeout(function(){
+	ga('send', {
+	  hitType: 'event',
+	  eventCategory: 'test_name',
+	  eventAction: 'test_action',
+	  eventLabel: 'test_label'
+	});
+}, 3000);
+*/
+
+(function() {
+
+var jQuery;
+var callback_script_src = document.currentScript.src;
+
+if (window.jQuery === undefined)
+{
+    var script_tag = document.createElement('script');
+    script_tag.setAttribute("type","text/javascript");
+    script_tag.setAttribute("src", "http://cdn.bmcallback.ru/callback/jquery.min.js");
+    if (script_tag.readyState)
+    {
+    	script_tag.onreadystatechange = function ()
+		{
+        	if (this.readyState == 'complete' || this.readyState == 'loaded')
+			{
+            	scriptLoadHandler();
+        	}
+    	};
+    }
+    else
+    {
+		script_tag.onload = scriptLoadHandler;
+    }
+    (document.getElementsByTagName("head")[0] || document.documentElement).appendChild(script_tag);
+}
+else
+{
+    jQuery = window.jQuery;
+    main(callback_script_src);
+}
+
+function scriptLoadHandler()
+{
+    jQuery = window.jQuery.noConflict(true);
+    main(callback_script_src); 
+}
+
+function main(callback_script_src)
+{
+    jQuery(document).ready(function($)
+    {
+	    var Callback = 
+		{
+			element: {
+				callback_button: false,
+				callback_form_button: false,
+				callback_form: false,
+				overlay: false
+			},
+			script_src: callback_script_src,
+			setting: {
+				bmbullet_id: false,
+				bmbullet_email: false,
+				bmbullet_user_id: false,
+				bmbullet_phone: false,
+				enabled: true,
+				text: 'Наши специалисты свяжутся с Вами.<br>Это бесплатно!'
+			},
+			helpers: {
+				parseUri: function(url) {
+					var b = document.createElement("a");
+					return b.href = url, {
+						protocol: b.protocol,
+						hostname: b.hostname,
+						port: b.port,
+						path: b.hostname + b.pathname,
+						pathname: b.pathname,
+						search: b.search,
+						query: this.parseQueryString(b.search.replace(/^\?/, "")),
+						hash: b.hash,
+						host: b.host
+					}
+				},
+				parseQueryString: function(string) {
+					var b = {};
+					return string.split("&").forEach(function(string) {
+						var c = string.split("=");
+						0 !== c[0].length && c[1] && (b[c[0]] = c[1])
+					}), b
+				}
+			},
+			getBmbulletId: function()
+			{
+				var value;
+				
+				if ("undefined" != typeof this.helpers.parseUri(Callback.script_src).query.bmbullet_id)
+				{
+					value = this.helpers.parseUri(Callback.script_src).query.bmbullet_id;
+				}
+				else
+				{
+					value = false;
+				}
+				
+				return value;
+			},
+			getBmbulletEmail: function()
+			{
+				var value;
+				
+				if ("undefined" != typeof this.helpers.parseUri(Callback.script_src).query.bmbullet_email)
+				{
+					value = this.helpers.parseUri(Callback.script_src).query.bmbullet_email;
+				}
+				else
+				{
+					value = false;
+				}
+				
+				return value;
+			},
+			getBmbulletUserId: function()
+			{
+				var value;
+				
+				if ("undefined" != typeof this.helpers.parseUri(Callback.script_src).query.bm_bullet_user_id)
+				{
+					value = this.helpers.parseUri(Callback.script_src).query.bm_bullet_user_id;
+				}
+				else
+				{
+					value = false;
+				}
+				
+				return value;
+			},
+			getEnabled: function()
+			{
+				var value;
+				
+				if ("undefined" != typeof this.helpers.parseUri(Callback.script_src).query.enabled && this.helpers.parseUri(Callback.script_src).query.enabled == 0)
+				{
+					value = false;
+				}
+				else
+				{
+					value = true;
+				}
+				
+				return value;
+			},
+			getText: function()
+			{
+				var value;
+				
+				if ("undefined" != typeof this.helpers.parseUri(Callback.script_src).query.text && this.helpers.parseUri(Callback.script_src).query.text != "")
+				{
+					value = (this.helpers.parseUri(Callback.script_src).query.text);
+				}
+				else
+				{
+					value = 'Наши специалисты свяжутся с Вами.<br>Это бесплатно!';
+				}
+				
+				return value;
+			},
+			getPhone: function()
+			{
+				var value;
+				
+				if (
+						"undefined" != typeof $('#lpPhoneBlock') && 
+						"undefined" != typeof $('#lpPhoneBlock').find('a') && 
+						"undefined" != typeof $('#lpPhoneBlock').find('a').attr('href') && 
+						"undefined" != typeof $('#lpPhoneBlock').find('a').attr('href').split(':') && 
+						"undefined" != typeof $('#lpPhoneBlock').find('a').attr('href').split(':')[1]
+					)
+				{
+					value = $('#lpPhoneBlock').find('a').attr('href').split(':')[1]
+				}
+				else
+				{
+					value = false;
+				}
+				
+				return value;
+			},
+			init: function()
+			{
+				if( !this.isMobile.any() )
+				{
+					// Получаем идентификатор пули
+					this.setting.bmbullet_id = this.getBmbulletId();
+					// Получаем email адрес владельца пули
+					this.setting.bmbullet_email = this.getBmbulletEmail();
+					// Получаем идентификатор владельца пули
+					this.setting.bmbullet_user_id = this.getBmbulletUserId();
+					// Получаем состояние виджета
+					this.setting.enabled = this.getEnabled();
+					// Получаем призыв к звонку
+					this.setting.text = this.getText();
+					// Получаем телефон
+					this.setting.bmbullet_phone = this.getPhone();
+					
+					// Проверка состояния виджета
+					if (this.setting.enabled == true)
+					{
+						// Виджет включен
+						if (this.setting.bmbullet_id != false && this.setting.bmbullet_email != false)
+						{
+							Callback.getSetting(function()
+							{
+								if (Callback.setting != false)
+								{
+									if (Callback.setting.is_active == 1)
+									{
+										Callback.createWidget();
+									}
+								}
+							});
+						}
+					}
+					else
+					{
+						// Виджет выключен
+					}
+				}
+			},
+			isMobile: {
+			    android: function() {
+			        return navigator.userAgent.match(/Android/i);
+			    },
+			    blackBerry: function() {
+			        return navigator.userAgent.match(/BlackBerry/i);
+			    },
+			    ios: function() {
+			        return navigator.userAgent.match(/iPhone|iPad|iPod/i);
+			    },
+			    opera: function() {
+			        return navigator.userAgent.match(/Opera Mini/i);
+			    },
+			    windows: function() {
+			        return navigator.userAgent.match(/IEMobile/i);
+			    },
+			    any: function() {
+			        return (this.android() || this.blackBerry() || this.ios() || this.opera() || this.windows());
+			    }
+			},
+			getSetting: function(callback)
+			{
+				var data = {
+					bmbullet_id: this.setting.bmbullet_id,
+					bmbullet_email: this.setting.bmbullet_email,
+					bmbullet_user_id: this.setting.bmbullet_user_id,
+					bmbullet_phone: this.setting.bmbullet_phone,
+					enabled: this.setting.enabled,
+					text: this.setting.text
+				}
+				
+				$.ajax({
+			        type:'GET',
+			        dataType: 'jsonp',
+			        data: data,
+			        url : '//bmcallback.ru/api/getSetting?callback=?',
+			        cache: false,
+			        beforeSend: function()
+			        {
+				        Callback.setting = false;
+					},
+					error: function()
+					{
+						Callback.setting = false;
+						
+						callback();
+					},
+			        success: function(json)
+			        {
+				        if (json.success == true)
+				        {
+					        Callback.setting = json.setting;
+				        }
+				        else
+				        {
+					        Callback.setting = false;
+				        }
+				        
+				        callback();
+			        }
+			    });
+			},
+			formSend: function()
+			{
+				var post_data = $(".raketa-callback-form-block :input").serializeArray();
+				post_data.push({name: 'bmbullet_id', value: Callback.setting.bmbullet_id});
+				post_data.push({name: 'bmbullet_email', value: Callback.setting.bmbullet_email});
+				post_data.push({name: 'bmbullet_user_id', value: Callback.setting.bmbullet_user_id});
+				post_data.push({name: 'bmbullet_phone', value: Callback.setting.bmbullet_phone});
+				post_data.push({name: 'host', value: window.location.host});
+			    
+		        $.ajax({
+			        type:'GET',
+			        dataType: 'jsonp',
+					data: post_data,
+			        url : '//bmcallback.ru/api/formSend?callback=?',
+			        cache: false,
+			        beforeSend: function()
+			        {
+				        // Скрываем форму
+				        $('.raketa-callback-form-block').fadeOut(100, function(){
+					        $('.raketa-callback-success').fadeIn();
+				        });
+					},
+					error: function()
+					{
+						// Ошибка
+						// Скрываем success
+						setTimeout(function()
+						{
+							$('.raketa-callback-success').fadeOut(100, function(){
+						        $('.raketa-callback-form-block').fadeIn();
+					        });
+					    }, 1000);
+					},
+			        success: function(json)
+			        {
+				        if (json.success == true)
+				        {
+					        // Обратный звонок заказан
+					        // Переключаем success анимацию
+					        $('.raketa-callback-success-circle-loader').toggleClass('raketa-callback-success-load-complete');
+							$('.raketa-callback-success-checkmark').toggle();
+							
+							setTimeout(function()
+							{
+								// Скрываем success
+								Callback.element.callback_form.classList.remove('fadeInDown');
+								Callback.element.callback_form.classList.add('fadeOutUp');
+								Callback.element.overlay.classList.remove('fadeInOverlay');
+								Callback.element.overlay.classList.add('fadeOutOverlay');
+								
+								setTimeout(function()
+								{
+									Callback.element.callback_form.classList.remove('fadeOutUp', 'animated');
+									Callback.element.callback_form.classList.add('-hidden');
+									Callback.element.overlay.classList.remove('fadeOutOverlay', 'animated');
+									Callback.element.overlay.classList.add('-hidden');
+					    		}, 1000);
+								
+								// Переключаем success анимацию
+								$('.raketa-callback-success-circle-loader').toggleClass('raketa-callback-success-load-complete');
+								$('.raketa-callback-success-checkmark').toggle();
+								
+								$('.raketa-callback-success').fadeOut(100, function(){
+							        $('.raketa-callback-form-block').fadeIn();
+						        });
+				    		}, 1000);
+				        }
+				        else
+				        {
+					        // Ошибка
+							// Скрываем success
+							setTimeout(function()
+							{
+								$('.raketa-callback-success').fadeOut(100, function(){
+							        $('.raketa-callback-form-block').fadeIn();
+						        });
+						    }, 1000);
+				        }
+			        }
+			    });
+			},
+			createWidget: function()
+			{
+				$(document.head).append('<link rel="stylesheet" type="text/css" href="http://cdn.bmcallback.ru/callback/callback.css">');
+        
+				setTimeout(function(){
+					$(document.body).append(
+					'<div id="raketa_callback_button">' +
+				        '<div class="raketa-callback-button-phone raketa-callback-button-animation">' +
+				            '<div class="raketa-callback-button-track"></div>' +
+				        	'<div class="raketa-callback-button-wrapper">' +
+				            	'<div class="raketa-callback-button-ring"></div>' +
+				            '</div>' +
+				            '<div class="raketa-callback-button-back-circle"></div>' +
+				            '<div class="raketa-callback-button-circle">' +
+				                '<div class="raketa-callback-button-handset"></div>' +
+				            '</div>' +
+					    '</div>' +
+				    '</div>' +
+				    '<div class="raketa-callback-form raketa-callback-center-form -hidden" id="raketa_callback_form">' +
+				    	'<div class="raketa-callback-form-block">' +
+							'<form action="#" metod="POST">' +
+						    	'<div class="raketa-callback-form-title">Мы перезвоним!</div>' +
+								'<div class="raketa-callback-form-action-area">' +
+									'<label class="raketa-callback-form-phone-wrap">' +
+										'<input type="text" class="raketa-callback-form-phone" name="phone" value="+">' +
+									'</label>' +
+									'<div class="raketa-callback-form-submit-wrap">' +
+							        	'<button type="button" class="raketa-callback-form-submit" id="raketa_callback_form_submit">Жду звонка</button>' +
+									'</div>' +
+								'</div>' +
+								'<div class="raketa-callback-form-info">' +
+									Callback.setting.text +
+								'</div>' +
+							'</form>' +
+						'</div>' +
+						'<div class="raketa-callback-success raketa-callback-success-circle-loader" style="display:none;">' +
+							'<div class="raketa-callback-success-checkmark raketa-callback-success-draw"></div>' +
+						'</div>' +
+						'<span class="raketa-callback-form-close"></span>' +
+					'</div>'+
+					'<div class="raketa-callback-overlay -hidden" id="raketa_callback_overlay"></div>');
+					
+					var callbackButtonInit = function(callback_button, callback_form, overlay, callback_form_button)
+					{
+						var callbackFormCloseButton = callback_form.querySelector('.raketa-callback-form-close');
+						
+						var hideForm = function()
+						{
+							callback_form.classList.remove('fadeInDown');
+							callback_form.classList.add('fadeOutUp');
+							overlay.classList.remove('fadeInOverlay');
+							overlay.classList.add('fadeOutOverlay');
+							
+							setTimeout(function()
+							{
+								callback_form.classList.remove('fadeOutUp', 'animated');
+								callback_form.classList.add('-hidden');
+								overlay.classList.remove('fadeOutOverlay', 'animated');
+								overlay.classList.add('-hidden');
+				    		}, 1000);
+						};
+					
+						callback_button.addEventListener("click", function(e)
+						{
+							callback_form.classList.add('fadeInDown');
+							overlay.classList.add('fadeInOverlay');
+					
+							if ( callback_form.classList.contains('-hidden') )
+							{
+								callback_form.classList.remove('-hidden');
+								callback_form.classList.add('animated');
+								overlay.classList.remove('-hidden');
+								overlay.classList.add('animated');
+					    	}
+						});
+						
+						callback_form_button.addEventListener("click", function(e)
+						{
+							Callback.formSend();
+						});
+						
+						callbackFormCloseButton.addEventListener("click", function(e)
+						{
+					    	hideForm();
+						});
+						
+						window.addEventListener('keydown', function(e)
+						{
+							// Esc
+					    	if (event.keyCode == 27)
+					    	{
+								hideForm();
+					    	}
+						});
+					};
+					
+					Callback.element.callback_button = document.getElementById('raketa_callback_button');
+					Callback.element.callback_form_button = document.getElementById('raketa_callback_form_submit');
+					Callback.element.callback_form = document.getElementById('raketa_callback_form');
+					Callback.element.overlay = document.getElementById('raketa_callback_overlay');
+					
+					callbackButtonInit(Callback.element.callback_button, Callback.element.callback_form, Callback.element.overlay, Callback.element.callback_form_button);
+				}, 1000)
+			}
+		}
+		
+		Callback.init();
+    });
+}
+
+})();
