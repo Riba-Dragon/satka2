@@ -246,10 +246,17 @@ jQuery('#contact-form').yiiActiveForm([{"id":"namephoneemailcontactform-name","n
       
       <script type="text/javascript" src="//vk.com/js/api/openapi.js?136"></script>
 
-<!-- VK Widget -->
-<div id="vk_contact_us"></div>
+<!-- Put this script tag to the <head> of your page -->
+<script type="text/javascript" src="//vk.com/js/api/openapi.js?136"></script>
+
 <script type="text/javascript">
-VK.Widgets.ContactUs("vk_contact_us", {text: "Пиши ,что любишь"}, 121782886);
+  VK.init({apiId: 5746037, onlyWidgets: true});
+</script>
+
+<!-- Put this div tag to the place, where the Like block will be -->
+<div id="vk_like"></div>
+<script type="text/javascript">
+VK.Widgets.Like("vk_like", {type: "button"});
 </script>
       
       
